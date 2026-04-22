@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alexander — Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0c;
+    --surface: #111114;
+    --surface-2: #1a1a1f;
+    --border: #2a2a30;
+    --text: #e8e8ec;
+    --text-dim: #8888a0;
+    --accent: #00e5a0;
+    --accent-dim: #00e5a020;
+    --accent-glow: #00e5a040;
+    --orange: #ff6b35;
+    --blue: #4dabf7;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Sora', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,12,0.85);
+  }
+  nav .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+    height: 64px; display: flex; align-items: center; justify-content: space-between;
+  }
+  nav .logo { font-family: var(--mono); font-weight: 700; font-size: 1.1rem; color: var(--accent); letter-spacing: -0.5px; }
+  nav .logo span { color: var(--text-dim); font-weight: 300; }
+  nav .nav-links { display: flex; gap: 2rem; }
+  nav .nav-links a {
+    font-family: var(--mono); font-size: 0.8rem; color: var(--text-dim);
+    text-decoration: none; text-transform: uppercase; letter-spacing: 1.5px;
+    transition: color 0.3s; position: relative;
+  }
+  nav .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px; background: var(--accent); transition: width 0.3s;
+  }
+  nav .nav-links a:hover { color: var(--accent); }
+  nav .nav-links a:hover::after { width: 100%; }
+
+  /* ── SECTIONS ── */
+  section { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+  /* ── HERO ── */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 64px; }
+  .hero .tag {
+    font-family: var(--mono); font-size: 0.75rem; color: var(--accent);
+    letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 8vw, 6rem); font-weight: 700; line-height: 1.05;
+    letter-spacing: -2px; margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+  .hero h1 .outline { -webkit-text-stroke: 1.5px var(--text); color: transparent; }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 560px; line-height: 1.8;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+  .hero .disciplines {
+    display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+  .discipline-tag {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase;
+    padding: 0.5rem 1.2rem; border: 1px solid var(--border); border-radius: 2px;
+    color: var(--text-dim); background: var(--surface); transition: all 0.3s;
+  }
+  .discipline-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  .discipline-tag[data-type="electrical"] { border-left: 3px solid var(--accent); }
+  .discipline-tag[data-type="computer"]   { border-left: 3px solid var(--blue); }
+  .discipline-tag[data-type="mechanical"] { border-left: 3px solid var(--orange); }
+
+  /* ── SECTION HEADERS ── */
+  .section-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 3rem; padding-top: 8rem; }
+  .section-header .num { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); letter-spacing: 2px; }
+  .section-header h2 { font-size: 2.2rem; font-weight: 700; letter-spacing: -1px; }
+  .section-header .line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── PROJECT GRID ── */
+  .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; padding-bottom: 4rem; }
+
+  .project-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+    padding: 2rem; transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    position: relative; overflow: hidden; cursor: pointer;
+  }
+  .project-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 3px; background: var(--accent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .project-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 20px 60px -20px var(--accent-glow); }
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-card .card-type { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 1rem; }
+  .project-card .click-hint {
+    position: absolute; bottom: 1rem; right: 1.5rem;
+    font-family: var(--mono); font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 1px; text-transform: uppercase; opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .project-card:hover .click-hint { opacity: 0.6; }
+
+  .project-card[data-type="computer"] .card-type { color: var(--blue); }
+  .project-card[data-type="computer"]::before   { background: var(--blue); }
+  .project-card[data-type="computer"]:hover      { border-color: var(--blue); box-shadow: 0 20px 60px -20px rgba(77,171,247,0.25); }
+  .project-card[data-type="mechanical"] .card-type { color: var(--orange); }
+  .project-card[data-type="mechanical"]::before   { background: var(--orange); }
+  .project-card[data-type="mechanical"]:hover      { border-color: var(--orange); box-shadow: 0 20px 60px -20px rgba(255,107,53,0.25); }
+
+  .project-card h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; letter-spacing: -0.5px; }
+  .project-card p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 1.5rem; }
+  .project-card .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .project-card .tags span {
+    font-family: var(--mono); font-size: 0.65rem; padding: 0.3rem 0.7rem;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 2px; color: var(--text-dim);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(12px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s ease;
+    padding: 2rem;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+    max-width: 780px; width: 100%; max-height: 85vh; overflow-y: auto;
+    transform: translateY(30px) scale(0.97);
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    position: relative;
+  }
+  .modal-overlay.active .modal { transform: translateY(0) scale(1); }
+
+  .modal-topbar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 2rem;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  .modal-topbar .modal-type {
+    font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--accent);
+  }
+  .modal-topbar .modal-close {
+    background: none; border: 1px solid var(--border); border-radius: 4px;
+    color: var(--text-dim); font-family: var(--mono); font-size: 0.75rem;
+    padding: 0.4rem 0.8rem; cursor: pointer; transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .modal-topbar .modal-close:hover { border-color: var(--text); color: var(--text); }
+
+  .modal-body { padding: 2rem; }
+  .modal-body h2 { font-size: 1.8rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 1.5rem; }
+  .modal-body .modal-desc { color: var(--text-dim); font-size: 0.95rem; line-height: 1.9; margin-bottom: 2rem; }
+  .modal-body .modal-desc p { margin-bottom: 1rem; }
+  .modal-body .modal-desc p:last-child { margin-bottom: 0; }
+
+  .modal-images { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+  .modal-images.single { grid-template-columns: 1fr; }
+
+  .modal-img-slot {
+    aspect-ratio: 16/10; border-radius: 4px; overflow: hidden;
+    border: 1px solid var(--border); background: var(--surface-2);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .modal-img-slot img { width: 100%; height: 100%; object-fit: cover; }
+  .modal-img-slot .placeholder {
+    display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+    color: var(--text-dim); opacity: 0.4;
+  }
+  .modal-img-slot .placeholder svg { width: 36px; height: 36px; }
+  .modal-img-slot .placeholder span { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; }
+
+  .modal-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .modal-tags span {
+    font-family: var(--mono); font-size: 0.65rem; padding: 0.4rem 0.9rem;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 2px; color: var(--text-dim);
+  }
+
+  .modal[data-type="computer"] .modal-type { color: var(--blue); }
+  .modal[data-type="mechanical"] .modal-type { color: var(--orange); }
+
+  .modal::-webkit-scrollbar { width: 6px; }
+  .modal::-webkit-scrollbar-track { background: transparent; }
+  .modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── ABOUT ── */
+  .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding-bottom: 4rem; }
+  .about-text p { color: var(--text-dim); font-size: 1rem; line-height: 1.9; margin-bottom: 1.5rem; }
+  .about-text p strong { color: var(--text); }
+  .skills-list { display: flex; flex-direction: column; gap: 1rem; }
+  .skill-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.5rem; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 4px; transition: all 0.3s;
+  }
+  .skill-row:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .skill-row .skill-name { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.5px; }
+  .skill-row .skill-level { display: flex; gap: 4px; }
+  .skill-row .skill-level .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
+  .skill-row .skill-level .dot.filled { background: var(--accent); }
+  .skill-row:hover .skill-level .dot.filled { box-shadow: 0 0 8px var(--accent-glow); }
+
+  /* ── CONTACT ── */
+  .contact-section { padding-top: 8rem; padding-bottom: 8rem; text-align: center; }
+  .contact-section h2 { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 1rem; }
+  .contact-section p { color: var(--text-dim); font-size: 1.05rem; margin-bottom: 2.5rem; }
+  .contact-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+  .contact-link {
+    font-family: var(--mono); font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;
+    padding: 0.8rem 2rem; border: 1px solid var(--border); border-radius: 2px;
+    color: var(--text-dim); text-decoration: none; transition: all 0.3s; background: var(--surface);
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); transform: translateY(-2px); }
+
+  footer {
+    position: relative; z-index: 1; border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center; font-family: var(--mono);
+    font-size: 0.7rem; color: var(--text-dim); letter-spacing: 1px;
+  }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1); }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  body.modal-open { overflow: hidden; }
+
+  @media (max-width: 768px) {
+    .about-content { grid-template-columns: 1fr; gap: 2rem; }
+    .project-grid { grid-template-columns: 1fr; }
+    .modal-images { grid-template-columns: 1fr; }
+    nav .nav-links { gap: 1rem; }
+    nav .nav-links a { font-size: 0.7rem; letter-spacing: 1px; }
+    .hero h1 { letter-spacing: -1px; }
+    .modal-body { padding: 1.5rem; }
+    .modal-body h2 { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">alexander<span>.eng</span></div>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a href="#connect">Connect</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<section class="hero" id="home">
+  <div class="tag">// Northeastern University — Engineering</div>
+  <h1>
+    I design &amp;<br>
+    build <span class="accent">systems</span><br>
+    <span class="outline">that work.</span>
+  </h1>
+  <p class="subtitle">
+    Electrical. Computer. Mechanical. From embedded firmware to 3D-printed mechanisms — I bridge the gap between hardware and software.
+  </p>
+  <div class="disciplines">
+    <div class="discipline-tag" data-type="electrical">⚡ Electrical</div>
+    <div class="discipline-tag" data-type="computer">◆ Computer</div>
+    <div class="discipline-tag" data-type="mechanical">⚙ Mechanical</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ PROJECTS ═══════════════════════════ -->
+<section id="projects">
+  <div class="section-header fade-in">
+    <span class="num">01</span>
+    <h2>Projects</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="project-grid">
+
+    <!--
+      ┌──────────────────────────────────────────────────────────────┐
+      │  HOW TO ADD A PROJECT:                                       │
+      │  1. Copy any .project-card div below                         │
+      │  2. Set data-type="electrical" / "computer" / "mechanical"   │
+      │  3. Update the visible card text (h3, p, tags)               │
+      │  4. Update the hidden .modal-data inside the card:           │
+      │     - .modal-full-desc  → long description (use <p> tags)    │
+      │     - .modal-img-slot   → swap placeholder for <img> tag     │
+      │  5. Done. Click the card to see the popup.                   │
+      │                                                              │
+      │  TO ADD REAL IMAGES: replace a placeholder div with:         │
+      │  <img src="images/your-photo.jpg" alt="description">        │
+      └──────────────────────────────────────────────────────────────┘
+    -->
+
+    <!-- ══════ E-BIKE MOTOR TEARDOWN ══════ -->
+    <div class="project-card fade-in" data-type="mechanical">
+      <div class="card-type">Mechanical / Electrical</div>
+      <h3>E-Bike Motor Teardown &amp; Replacement</h3>
+      <p>Full teardown, diagnosis, and motor replacement on a Totem Volcano electric mountain bike. Hands-on work with hub motor internals, hall sensors, and controller wiring.</p>
+      <div class="tags">
+        <span>Hub Motor</span>
+        <span>Hall Sensors</span>
+        <span>Wiring</span>
+        <span>Diagnostics</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>When the rear hub motor on my Totem Volcano electric mountain bike started showing intermittent power loss and grinding, I decided to tear it down myself rather than send it out for service. The goal was to understand exactly what failed and do a full motor swap.</p>
+          <p>The teardown involved removing the rear wheel, cracking open the hub motor casing, and inspecting the stator windings, magnets, and hall effect sensors. I found heat damage on two of the three hall sensors and signs of demagnetization on several rotor magnets — likely from sustained hill climbing under heavy load.</p>
+          <p>I sourced a replacement motor with matching KV rating and bolt pattern, rewired the phase leads and hall sensor harness to the existing controller, and verified correct commutation sequence before reassembly. The whole process required careful attention to the motor-to-controller protocol, phase order, and mechanical alignment within the dropout.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Motor teardown photo</span>
+          </div>
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Reassembled motor</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ STEERING WHEEL CONTROLLER ══════ -->
+    <div class="project-card fade-in" data-type="electrical">
+      <div class="card-type">Electrical / Embedded</div>
+      <h3>Raspberry Pi Steering Wheel Controller</h3>
+      <p>GPIO-based button controller on a CM5, broadcasting inputs over CAN bus and Unix domain sockets to a Qt receiver. Poll-based event loop architecture.</p>
+      <div class="tags">
+        <span>C</span>
+        <span>libgpiod</span>
+        <span>CAN Bus</span>
+        <span>Qt</span>
+        <span>Linux</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>Built a custom steering wheel button controller using a Raspberry Pi Compute Module 5. The system reads physical button inputs via GPIO using libgpiod and broadcasts state changes over both CAN bus (for vehicle integration) and Unix domain sockets (for a local Qt-based HMI receiver).</p>
+          <p>The architecture went through several iterations — starting with threaded approaches before settling on a poll()-based event loop for deterministic timing and lower overhead. The Unix socket layer evolved from SOCK_STREAM to SOCK_DGRAM with a client registration model to support multiple listeners without blocking.</p>
+          <p>The CAN bus integration required careful frame packing and timing to coexist with other ECUs on the bus without causing collisions or timing violations.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>CM5 wiring setup</span>
+          </div>
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Qt receiver UI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ MBTA LED MAP ══════ -->
+    <div class="project-card fade-in" data-type="computer">
+      <div class="card-type">Computer / Software</div>
+      <h3>MBTA Transit Map LED Display</h3>
+      <p>ESP32-driven WS2812B strip addressing ~350 individually controlled LEDs representing real-time MBTA transit lines across a physical map.</p>
+      <div class="tags">
+        <span>ESP32</span>
+        <span>WS2812B</span>
+        <span>C++</span>
+        <span>PCB Design</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>Designed and built a physical MBTA transit map with individually addressable WS2812B LED strips representing each line — Red, Orange, Blue, and Green. Approximately 350 LEDs are mapped to station positions on a wall-mounted board.</p>
+          <p>An ESP32 microcontroller drives the strips, handling the precise timing requirements of the WS2812B protocol across multiple data lines. The PCB was custom designed to distribute power cleanly across long LED runs while minimizing voltage drop at the far ends of each line.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>LED map lit up</span>
+          </div>
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>PCB layout</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ TICTAC DISPENSER ══════ -->
+    <div class="project-card fade-in" data-type="mechanical">
+      <div class="card-type">Mechanical / Design</div>
+      <h3>Rack &amp; Pinion TicTac Dispenser</h3>
+      <p>3D-printed servo-driven dispenser designed in SolidWorks. Module 2.0 gear geometry with calculated pitch diameter and backlash compensation.</p>
+      <div class="tags">
+        <span>SolidWorks</span>
+        <span>3D Printing</span>
+        <span>SG90 Servo</span>
+        <span>Gear Design</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>Designed a servo-actuated TicTac dispenser from scratch in SolidWorks, using a rack and pinion mechanism driven by an SG90 micro servo. The gear train uses module 2.0 involute tooth profiles with calculated pitch diameters and deliberate backlash to account for FDM printing tolerances.</p>
+          <p>The dispenser reliably ejects a single TicTac per actuation cycle. Getting the gear mesh right for 3D printing required multiple test prints to dial in tooth clearance, since FDM layer lines and slight warping can bind gears that work perfectly in CAD.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>CAD render</span>
+          </div>
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Printed assembly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ PLANT WATERING ══════ -->
+    <div class="project-card fade-in" data-type="electrical">
+      <div class="card-type">Electrical / Embedded</div>
+      <h3>Automated Plant Watering System</h3>
+      <p>Arduino Nano system with RTC scheduling, OLED display, soil moisture sensing, and MOSFET-controlled pump. Optimized to fit within Nano's RAM constraints.</p>
+      <div class="tags">
+        <span>Arduino</span>
+        <span>I2C</span>
+        <span>MOSFET</span>
+        <span>Sensors</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>Built an automated watering system for my spider plant using an Arduino Nano. The system uses a DS3231 RTC for scheduled watering intervals, a capacitive soil moisture sensor to prevent overwatering, and a small OLED display showing current status and next scheduled run.</p>
+          <p>A logic-level MOSFET switches a 5V peristaltic pump. Getting everything to fit within the Nano's 2KB of SRAM required careful memory optimization — moving strings to PROGMEM and minimizing library overhead.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Breadboard setup</span>
+          </div>
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>OLED display readout</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ SHOE DETECTION ══════ -->
+    <div class="project-card fade-in" data-type="computer">
+      <div class="card-type">Computer / Vision</div>
+      <h3>Shoe &amp; Sock Detection System</h3>
+      <p>YOLO-based computer vision pipeline using Roboflow API on a Raspberry Pi for real-time footwear classification and detection.</p>
+      <div class="tags">
+        <span>Python</span>
+        <span>YOLO</span>
+        <span>Roboflow</span>
+        <span>Raspberry Pi</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>Developed a real-time object detection system running on a Raspberry Pi that identifies shoes and socks in a camera feed. The model was trained using Roboflow's annotation and training pipeline with a YOLO architecture, then deployed for edge inference.</p>
+          <p>The system processes live video frames and draws bounding boxes with confidence scores, classifying detected footwear by type. Optimizations were needed to maintain usable frame rates on the Pi's limited compute.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Detection output</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ SPIDER ROBOT ══════ -->
+    <div class="project-card fade-in" data-type="electrical">
+      <div class="card-type">Electrical / FPGA</div>
+      <h3>Spider Robot Motor Control</h3>
+      <p>ARM/FPGA-based motor controller for a Terasic Spider Robot. C++ SpiderLeg class with register-level servo control on DE1-SoC hardware.</p>
+      <div class="tags">
+        <span>C++</span>
+        <span>FPGA</span>
+        <span>ARM</span>
+        <span>DE1-SoC</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>Implemented motor control software for a Terasic Spider Robot using the DE1-SoC's dual ARM Cortex-A9 / Cyclone V FPGA architecture. Wrote a C++ SpiderLeg class that abstracts individual servo control through memory-mapped FPGA registers.</p>
+          <p>The FPGA handles real-time PWM generation for multiple servo channels while the ARM processor runs the higher-level gait logic and sequencing. Communication between the two happens through the HPS-to-FPGA bridge with direct register reads and writes.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Spider robot</span>
+          </div>
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>DE1-SoC board</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ SMART PEEPHOLE CAMERA ══════ -->
+    <div class="project-card fade-in" data-type="computer">
+      <div class="card-type">Computer / Networking</div>
+      <h3>Smart Peephole Camera</h3>
+      <p>Raspberry Pi Zero W2 with PiCamera streaming a live MJPEG feed through a Flask server, accessible remotely via secure Cloudflare Tunnel.</p>
+      <div class="tags">
+        <span>Pi Zero W2</span>
+        <span>Flask</span>
+        <span>Cloudflare</span>
+        <span>Python</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>Built a smart door peephole replacement using a Raspberry Pi Zero W2 and PiCamera module. The system runs a Flask server that captures live video frames using PiCamera2 and OpenCV, encoding them as MJPEG and serving them over HTTP with basic authentication.</p>
+          <p>The Pi streams directly to a local display using mpv rendering to the framebuffer via DRM — no desktop environment needed. A systemd service handles auto-start on boot with a timed delay to let the network come up first.</p>
+          <p>For remote access, the feed is tunneled through Cloudflare Tunnel, providing secure HTTPS access from anywhere without exposing the Pi's local network or opening router ports. The whole stack runs headless on Raspberry Pi OS Lite.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Pi Zero setup</span>
+          </div>
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Live stream view</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ ROLLER COASTER SAFETY SIMULATION ══════ -->
+    <div class="project-card fade-in" data-type="computer">
+      <div class="card-type">Computer / STEM Education</div>
+      <h3>Roller Coaster Safety Simulation</h3>
+      <p>Interactive engineering failure mystery for 5th graders using an ESP32, IR and ultrasonic sensors, and a laser-cut track with multi-station puzzle gameplay.</p>
+      <div class="tags">
+        <span>ESP32</span>
+        <span>IR Sensor</span>
+        <span>Ultrasonic</span>
+        <span>Laser Cutting</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>Designed and built an interactive roller coaster engineering failure simulation as a STEM outreach project for 5th grade students. The experience casts students as engineering investigators who must diagnose what went wrong with a roller coaster by working through a series of hands-on diagnostic stations.</p>
+          <p>The physical setup uses a laser-cut track with an ESP32 microcontroller driving the logic. Each station presents a different type of engineering check — students make physical wire connections to restore power circuits, use IR sensors to verify track alignment, monitor ultrasonic sensors for clearance detection, and adjust potentiometers to dial in safe operating speeds. RGB LEDs and an LCD display provide real-time feedback as students progress.</p>
+          <p>The project was built collaboratively by a college student team and delivered at local elementary schools as part of a volunteer STEM education program.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Station setup</span>
+          </div>
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Students interacting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ WELDED HOCKEY NET ══════ -->
+    <div class="project-card fade-in" data-type="mechanical">
+      <div class="card-type">Mechanical / Fabrication</div>
+      <h3>Welded Knee Hockey Net</h3>
+      <p>Custom knee hockey net built from welded metal tubing with bent skid bars, designed from scratch and fabricated by hand.</p>
+      <div class="tags">
+        <span>Welding</span>
+        <span>Metal Fab</span>
+        <span>Tube Bending</span>
+        <span>Design</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>Designed and fabricated a knee hockey net from metal round tubing, welded together from scratch. The frame uses standard dimensions (roughly 18" wide, 12" tall, 12" deep) with bent bottom skid bars that curve outward along the floor — matching the geometry of real hockey nets.</p>
+          <p>The build involved cutting tubing to length, mitering joints for clean fits, tack welding the frame square, and running full beads on all corners. The bottom tubes were bent to create the characteristic peg/skid shape that keeps the net from sliding during play.</p>
+          <p>This was a hands-on fabrication project focused on learning welding technique — joint prep, heat management on thin-wall tubing, and keeping the frame from warping during assembly.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Welded frame</span>
+          </div>
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Finished net</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ FRC BUTTON BOX ══════ -->
+    <div class="project-card fade-in" data-type="electrical">
+      <div class="card-type">Electrical / HID</div>
+      <h3>FRC Button Box Controller</h3>
+      <p>Custom Arduino-based HID controller for FRC Reefscape, designed to give the operator dedicated physical buttons for precise robot mechanism control during competition.</p>
+      <div class="tags">
+        <span>Arduino</span>
+        <span>USB HID</span>
+        <span>FRC</span>
+        <span>3D Printing</span>
+      </div>
+      <span class="click-hint">Click to expand →</span>
+      <div class="modal-data" style="display:none">
+        <div class="modal-full-desc">
+          <p>Built a custom button box controller for FRC (FIRST Robotics Competition) to improve operator control during the 2025 Reefscape game. The controller uses an Arduino programmed as a USB HID (Human Interface Device) so the driver station recognizes it as a standard joystick — no special drivers needed.</p>
+          <p>Each physical button and switch on the box maps to a specific robot function — arm positions, intake/outtake, climb sequences — giving the operator dedicated tactile controls instead of hunting for keyboard shortcuts or sharing a gamepad. The layout was designed around the specific mechanisms and scoring actions in Reefscape.</p>
+          <p>The enclosure was designed and 3D printed to fit the button layout ergonomically, with labeled switches and a clean wiring harness inside. The Arduino handles debouncing and sends HID reports over USB to the driver station laptop.</p>
+        </div>
+        <div class="modal-images-data">
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Button box top</span>
+          </div>
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Internal wiring</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+      ┌──────────────────────────────────────────────────────────────┐
+      │  ↑ ADD MORE PROJECT CARDS ABOVE THIS LINE ↑                  │
+      └──────────────────────────────────────────────────────────────┘
+    -->
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════ MODAL CONTAINER ═══════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <div class="modal-topbar">
+      <span class="modal-type" id="modalType"></span>
+      <button class="modal-close" id="modalClose">ESC ✕</button>
+    </div>
+    <div class="modal-body">
+      <h2 id="modalTitle"></h2>
+      <div class="modal-images" id="modalImages"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-tags" id="modalTags"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ ABOUT ═══════════════════════════ -->
+<section id="about">
+  <div class="section-header fade-in">
+    <span class="num">02</span>
+    <h2>About</h2>
+    <div class="line"></div>
+  </div>
+  <div class="about-content fade-in">
+    <div class="about-text">
+      <p>I'm an <strong>engineering student at Northeastern University</strong> in Boston, working across electrical, computer, and mechanical engineering. I got here through years of building things — leading my high school robotics team as <strong>President and Team Captain</strong>, founding a coding club for grades 6–12, and earning my <strong>Eagle Scout</strong> rank, where I led a team to build a footbridge for a local animal rescue.</p>
+      <p>At Northeastern, that hands-on drive has only gotten deeper. I work with embedded Linux, FPGA architectures, CAN bus protocols, and PCB design — building systems where firmware meets hardware meets the real world. Whether it's debugging memory-mapped I/O on a DE1-SoC or tearing down a hub motor on my e-bike, I'm happiest when I'm solving problems I can hold in my hands.</p>
+      <p>I also volunteer teaching <strong>STEM to K-12 students</strong> at schools and libraries around Boston — running engineering challenges, chromatography experiments, and showing kids that building things is the best way to learn how things work.</p>
+    </div>
+    <div class="skills-list">
+      <div class="skill-row"><span class="skill-name">C / C++</span><div class="skill-level"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Python</span><div class="skill-level"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Embedded Systems</span><div class="skill-level"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></div>
+      <div class="skill-row"><span class="skill-name">PCB / Altium</span><div class="skill-level"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></div>
+      <div class="skill-row"><span class="skill-name">SolidWorks / CAD</span><div class="skill-level"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></div>
+      <div class="skill-row"><span class="skill-name">MATLAB</span><div class="skill-level"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></div>
+      <div class="skill-row"><span class="skill-name">FPGA / Verilog</span><div class="skill-level"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Linux / Bash</span><div class="skill-level"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ CONTACT ═══════════════════════════ -->
+<section class="contact-section" id="connect">
+  <div class="fade-in">
+    <h2>Let's build something.</h2>
+    <p>Open to co-ops, collaborations, and interesting problems.</p>
+    <div class="contact-links">
+      <a href="mailto:your@email.com" class="contact-link">✉ Email</a>
+      <a href="https://github.com/" class="contact-link" target="_blank">⌂ GitHub</a>
+      <a href="https://linkedin.com/" class="contact-link" target="_blank">▦ LinkedIn</a>
+      <a href="resume.pdf" class="contact-link" target="_blank">▤ Resume</a>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Alexander — Built with intent.</footer>
+
+<!-- ═══════════════════════════ SCRIPTS ═══════════════════════════ -->
+<script>
+  // ── Scroll fade-in ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // ── Nav highlight ──
+  const sections = document.querySelectorAll('section, .contact-section, #connect');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (scrollY >= s.offsetTop - 100) current = s.getAttribute('id'); });
+    navLinks.forEach(l => { l.style.color = l.getAttribute('href') === '#' + current ? 'var(--accent)' : ''; });
+  });
+
+  // ── Modal system ──
+  const overlay = document.getElementById('modalOverlay');
+  const modal = document.getElementById('modal');
+  const modalType = document.getElementById('modalType');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDesc = document.getElementById('modalDesc');
+  const modalImages = document.getElementById('modalImages');
+  const modalTags = document.getElementById('modalTags');
+
+  function openModal(card) {
+    const type = card.dataset.type;
+    const typeLabel = card.querySelector('.card-type').textContent;
+    const title = card.querySelector('h3').textContent;
+    const tags = card.querySelectorAll('.tags span');
+    const modalData = card.querySelector('.modal-data');
+    const fullDesc = modalData.querySelector('.modal-full-desc').innerHTML;
+    const imagesData = modalData.querySelectorAll('.modal-images-data > *');
+
+    modal.setAttribute('data-type', type);
+    modalType.textContent = typeLabel;
+    modalTitle.textContent = title;
+    modalDesc.innerHTML = fullDesc;
+
+    // Build image slots
+    modalImages.innerHTML = '';
+    modalImages.className = 'modal-images' + (imagesData.length === 1 ? ' single' : '');
+    imagesData.forEach(item => {
+      const slot = document.createElement('div');
+      slot.className = 'modal-img-slot';
+      if (item.tagName === 'IMG') {
+        const img = document.createElement('img');
+        img.src = item.src;
+        img.alt = item.alt || '';
+        slot.appendChild(img);
+      } else {
+        slot.innerHTML = item.outerHTML;
+      }
+      modalImages.appendChild(slot);
+    });
+
+    // Build tags
+    modalTags.innerHTML = '';
+    tags.forEach(t => {
+      const s = document.createElement('span');
+      s.textContent = t.textContent;
+      modalTags.appendChild(s);
+    });
+
+    // Scroll modal to top
+    modal.scrollTop = 0;
+
+    overlay.classList.add('active');
+    document.body.classList.add('modal-open');
+  }
+
+  function closeModal() {
+    overlay.classList.remove('active');
+    document.body.classList.remove('modal-open');
+  }
+
+  document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', () => openModal(card));
+  });
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+</script>
+
+</body>
+</html>

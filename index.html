@@ -286,7 +286,7 @@
 <!-- ═══════════════════════════ NAV ═══════════════════════════ -->
 <nav>
   <div class="nav-inner">
-    <div class="logo">alexander<span>.eng</span></div>
+    <div class="logo">Alex<span>.Houslanger</span></div>
     <div class="nav-links">
       <a href="#home">Home</a>
       <a href="#projects">Projects</a>
@@ -304,10 +304,9 @@
     build <span class="accent">systems</span><br>
     <span class="outline">that work.</span>
   </h1>
-  <p class="subtitle">
-    Electrical. Computer. Mechanical. From embedded firmware to 3D-printed mechanisms — I bridge the gap between hardware and software.
-  </p>
-  <div class="disciplines">
+  <p class="subtitle"> From embedded firmware to 3D-printed and machined systems&nbsp;</p>
+  <p class="subtitle">I bridge the gap between hardware and software. </p>
+<div class="disciplines">
     <div class="discipline-tag" data-type="electrical">⚡ Electrical</div>
     <div class="discipline-tag" data-type="computer">◆ Computer</div>
     <div class="discipline-tag" data-type="mechanical">⚙ Mechanical</div>
@@ -359,14 +358,8 @@
           <p>I sourced a replacement motor with matching KV rating and bolt pattern, rewired the phase leads and hall sensor harness to the existing controller, and verified correct commutation sequence before reassembly. The whole process required careful attention to the motor-to-controller protocol, phase order, and mechanical alignment within the dropout.</p>
         </div>
         <div class="modal-images-data">
-          <div class="placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Motor teardown photo</span>
-          </div>
-          <div class="placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Reassembled motor</span>
-          </div>
+          <img src="img/bike1.jpg" alt="description">  
+          <img src="img/bike2.jpg" alt="description">  
         </div>
       </div>
     </div>
@@ -391,14 +384,8 @@
           <p>The CAN bus integration required careful frame packing and timing to coexist with other ECUs on the bus without causing collisions or timing violations.</p>
         </div>
         <div class="modal-images-data">
-          <div class="placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>CM5 wiring setup</span>
-          </div>
-          <div class="placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Qt receiver UI</span>
-          </div>
+          <img src="img/SteeringWheel1.jpg" alt="description"> 
+          <img src="img/SteeringWheel2.jpg" alt="description"> 
         </div>
       </div>
     </div>
@@ -451,10 +438,7 @@
           <p>The dispenser reliably ejects a single TicTac per actuation cycle. Getting the gear mesh right for 3D printing required multiple test prints to dial in tooth clearance, since FDM layer lines and slight warping can bind gears that work perfectly in CAD.</p>
         </div>
         <div class="modal-images-data">
-          <div class="placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>CAD render</span>
-          </div>
+          <img src="img/PillDispence1.jpg" alt="description"> 
           <div class="placeholder">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
             <span>Printed assembly</span>
@@ -481,10 +465,7 @@
           <p>A logic-level MOSFET switches a 5V peristaltic pump. Getting everything to fit within the Nano's 2KB of SRAM required careful memory optimization — moving strings to PROGMEM and minimizing library overhead.</p>
         </div>
         <div class="modal-images-data">
-          <div class="placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Breadboard setup</span>
-          </div>
+          <img src="img/Plant1.jpg" alt="description"> 
           <div class="placeholder">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
             <span>OLED display readout</span>
@@ -511,10 +492,7 @@
           <p>The system processes live video frames and draws bounding boxes with confidence scores, classifying detected footwear by type. Optimizations were needed to maintain usable frame rates on the Pi's limited compute.</p>
         </div>
         <div class="modal-images-data">
-          <div class="placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Detection output</span>
-          </div>
+          <img src="img/Sock1.jpg" alt="description"> 
         </div>
       </div>
     </div>
@@ -661,10 +639,7 @@
           <p>The enclosure was designed and 3D printed to fit the button layout ergonomically, with labeled switches and a clean wiring harness inside. The Arduino handles debouncing and sends HID reports over USB to the driver station laptop.</p>
         </div>
         <div class="modal-images-data">
-          <div class="placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Button box top</span>
-          </div>
+          <img src="img/buttonbox1.jpg" alt="description"> 
           <div class="placeholder">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
             <span>Internal wiring</span>
